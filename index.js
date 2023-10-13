@@ -1,51 +1,60 @@
-const faker = require("@faker-js/faker").faker;
-const admin = require("firebase-admin");
+const admin = require("./firebaseAdmin");
+const createUser = require("./utils/createUser");
 const { environment } = require("./environment/environment");
-const getRandomElements = require("./utils/getRandomElements");
-const religionData = require("./data/religionData");
-const cuisineData = require("./data/cuisineData");
-const interestData = require("./data/interestData");
-
-try {
-  admin.initializeApp({
-    credential: admin.credential.cert(environment.firebase.credentials),
-    projectId: environment.firebase.credentials.project_id,
-    databaseURL: environment.firebase.databaseURL,
-  });
-  console.log("Firebase Admin initialized successfully.");
-} catch (error) {
-  console.error("Error initializing Firebase Admin:", error);
-}
-const religionArray = getRandomElements(religionData, 1);
-const cuisineArray = getRandomElements(cuisineData, 5);
-const interestArray = getRandomElements(interestData, 5);
-
-console.log(religionArray, cuisineArray, interestArray);
-const age = faker.number.int({ min: 18, max: 100 });
-const age_min = faker.number.int({ min: 18, max: 100 });
-const age_max = faker.number.int({ min: 18, max: 100 });
-const bio = faker.person.bio();
-const firstName = faker.person.firstName();
-const lastName = faker.person.lastName();
-const gender = faker.person.sex();
-const genderPreference = faker.person.sex();
-const state = faker.location.state();
-const lastActive = faker.date.between({
-  from: "2023-09-01T00:00:00.000Z",
-  to: "2023-10-03T00:00:00.000Z",
+const addFirestoreUsers = require("./utils/addFirestoreUsers");
+const readline = require("readline");
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
 });
-const religion = religionArray;
-const cuisine = cuisineArray;
-const interest = interestArray;
 
-console.log("Religion: ", religion);
-console.log("Cuisines: ", cuisine);
-console.log("Interests: ", interest);
-console.log("First Name:", firstName);
-console.log("Last Name:", lastName);
-console.log("Gender:", gender);
-console.log("Gender Preference:", genderPreference);
-console.log("Age:", age);
-console.log("State:", state);
-console.log("Bio:", bio);
-console.log("Last Active: ", lastActive);
+rl.question("Do you want to add, delete, or update a user? ", (answer) => {
+  switch (answer.toLowerCase().trim()) {
+    case "add":
+      rl.question("How many users do you want to add? ", (numUsers) => {
+        const numberOfUsers = parseInt(numUsers);
+        if (isNaN(numberOfUsers) || numberOfUsers <= 0) {
+          console.error("Please enter a valid positive number.");
+          rl.close();
+          return;
+        }
+
+        addFirestoreUsers(numberOfUsers)
+          .then(() => {
+            console.log("Users added successfully.");
+            rl.close();
+          })
+          .catch((error) => {
+            console.error("Error adding users:", error);
+          });
+      });
+      break;
+    case "delete":
+      deleteProfileFromFirebase()
+        .then(() => {
+          console.log("User deleted successfully.");
+          rl.close();
+        })
+        .catch((error) => {
+          console.error("Error deleting user:", error);
+        });
+      break;
+
+    case "update":
+      updateProfileInFirebase()
+        .then(() => {
+          console.log("User updated successfully.");
+          rl.close();
+        })
+        .catch((error) => {
+          console.error("Error updating user:", error);
+        });
+      break;
+
+    default:
+      console.log(
+        'Invalid option. Please choose "add", "delete", or "update".'
+      );
+      rl.close();
+  }
+});
