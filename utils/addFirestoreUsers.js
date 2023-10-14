@@ -2,13 +2,15 @@ const admin = require("../firebaseAdmin.js");
 const fs = require("fs");
 const path = require("path");
 const createUser = require("./createUser");
-const { environment } = require("../environment/environment");
+const config = require("../config");
 
 // Ensure admin is initialized and contains firestore
 console.log(admin);
 const db = admin.firestore();
 
 async function addFirestoreUsers(numberOfUsers) {
+  const collectionName = config.collectionName;
+
   const ids = [];
 
   for (let i = 0; i < numberOfUsers; i++) {
@@ -16,14 +18,17 @@ async function addFirestoreUsers(numberOfUsers) {
     console.log(user);
 
     try {
-      const docRef = await db.collection("Test").add(user);
+      const docRef = await db.collection(collectionName).add(user);
       console.log("User added with ID: ", docRef.id);
       ids.push(docRef.id); // Store the ID
     } catch (error) {
       console.error("Error adding user: ", error);
     }
   }
-  const filePath = path.join(__dirname, "../userids/ids.txt");
+  const filePath = path.join(
+    __dirname,
+    `../userids/${collectionName.toLowerCase()}_ids.txt`
+  );
 
   // Write IDs to a file
   fs.appendFile(filePath, ids.join("\n") + "\n", (err) => {

@@ -10,7 +10,7 @@ function createUser() {
   const interestArray = getRandomElements(interestData, 5);
   const age = faker.number.int({ min: 18, max: 100 });
   const age_min = faker.number.int({ min: 18, max: 100 });
-  const age_max = faker.number.int({ min: 18, max: 100 });
+  const age_max = faker.number.int({ min: age_min, max: 100 });
   const bio = faker.person.bio();
   const firstName = faker.person.firstName();
   const lastName = faker.person.lastName();

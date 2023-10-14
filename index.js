@@ -2,6 +2,7 @@ const admin = require("./firebaseAdmin");
 const createUser = require("./utils/createUser");
 const { environment } = require("./environment/environment");
 const addFirestoreUsers = require("./utils/addFirestoreUsers");
+const deleteFirestoreUsers = require("./utils/deleteFirestoreUsers");
 const readline = require("readline");
 const rl = readline.createInterface({
   input: process.stdin,
@@ -30,7 +31,7 @@ rl.question("Do you want to add, delete, or update a user? ", (answer) => {
       });
       break;
     case "delete":
-      deleteProfileFromFirebase()
+      deleteFirestoreUsers()
         .then(() => {
           console.log("User deleted successfully.");
           rl.close();
