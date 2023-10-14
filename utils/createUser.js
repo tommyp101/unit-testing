@@ -12,8 +12,7 @@ function createUser() {
   const age_min = faker.number.int({ min: 18, max: 100 });
   const age_max = faker.number.int({ min: age_min, max: 100 });
   const bio = faker.person.bio();
-  const firstName = faker.person.firstName();
-  const lastName = faker.person.lastName();
+  const name = faker.person.firstName();
   const gender = faker.person.sex();
   const genderPreference = faker.person.sex();
   const state = faker.location.state();
@@ -26,8 +25,7 @@ function createUser() {
   const interest = interestArray;
 
   return (user = {
-    firstName,
-    lastName,
+    name,
     gender,
     genderPreference,
     age,

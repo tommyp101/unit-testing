@@ -40,7 +40,7 @@ async function deleteProfilesFromFirebase() {
         console.error("Error clearing the ids.txt file:", err);
         return;
       }
-      console.log("IDs file cleared.");
+      console.log(`${collectionName}_ids.txt file cleared.`);
     });
   });
 }
