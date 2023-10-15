@@ -23,6 +23,7 @@ function createUser() {
   const religion = religionArray;
   const cuisine = cuisineArray;
   const interest = interestArray;
+  const jobTitle = faker.person.jobTitle();
 
   return (user = {
     name,
@@ -37,6 +38,7 @@ function createUser() {
     religion,
     cuisine,
     interest,
+    jobTitle,
   });
 }
 module.exports = createUser;
